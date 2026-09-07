@@ -144,9 +144,27 @@ body{
   box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 24px 48px -20px rgba(0,0,0,0.55);
   padding: 4.25rem 4.5rem;
 }
-@media (max-width: 720px){
-  .book{ padding: 1.75rem 0.6rem 4rem; }
-  .page{ padding: 2.4rem 1.5rem; }
+@media (max-width: 768px) {
+  .book{ padding: 1.75rem 0.8rem 4rem; }
+  .page{ padding: 2.5rem 1.8rem; }
+  .cover-page{ padding-top: 3.5rem; padding-bottom: 3rem; }
+  .chapter-page{ padding-top: 3rem; }
+  .chapter-body > h2 { font-size: 1.3rem; margin: 2.2rem 0 1rem; }
+  .chapter-body, .preface-page, .toc-page { font-size: 1rem; line-height: 1.6; }
+  
+  table.styled-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .book{ padding: 1rem 0.4rem 3rem; }
+  .page{ padding: 2rem 1.25rem; }
+  .chapter-head{ margin-bottom: 2rem; }
+  .cover-page blockquote { max-width: 100%; padding: 1.2rem; }
+  .code-block pre { padding: 1rem 1rem 1.2rem; }
 }
 
 .page-divider{
@@ -198,17 +216,17 @@ body{
   line-height: 1.55;
 }
 .cover-page blockquote{
-  text-align: left;
-  max-width: 46ch;
+  text-align: center;
+  max-width: 50ch;
   margin: 2.6rem auto 0;
   background: transparent;
   border: 1px solid var(--paper-line);
-  border-left: 3px solid var(--gold);
+  border-top: 3px solid var(--gold);
   border-radius: var(--radius-chip);
   padding: 1.6rem 1.9rem;
   font-style: normal;
 }
-.cover-page blockquote p{ margin: 0.5rem 0 0; color: var(--ink-soft); }
+.cover-page blockquote p{ margin: 0.5rem 0 0; color: var(--ink-soft); text-wrap: balance; line-height: 1.6; }
 .cover-page blockquote p:first-child{ margin-top: 0; }
 .cover-page blockquote strong{ color: var(--ink); }
 
@@ -418,6 +436,9 @@ table.styled-table code{ font-size: 0.85em; }
 
   <article class="page cover-page">
     <h1 class="book-title">Membangun Family Movie Watchlist API</h1>
+    <div style="text-align: center; margin: 2.5rem 0;">
+      <img src="images/ebook_cover_1788749594010.jpg" alt="Cover eBook Family Movie Watchlist API" style="max-width: 100%; max-height: 600px; object-fit: cover; border-radius: 12px; box-shadow: 0 12px 24px rgba(0,0,0,0.15);">
+    </div>
     <hr>
     <h3>Belajar Node.js, Express, bcrypt, dan JWT dari Nol Sampai Jadi</h3>
 <blockquote class="callout callout-note">
@@ -432,35 +453,50 @@ Buku ini cocok buat kamu yang sudah paham JavaScript dasar dan penasaran bagaima
     <h2>Daftar Isi</h2>
 <ul>
 <li><strong>Kata Pengantar</strong></li>
-<li><strong>Bab 1</strong> — Mengenal REST API dan Setup Project</li>
-<li>1.1 Apa itu REST API?</li>
-<li>1.2 Teknologi yang Akan Kita Pakai</li>
-<li>1.3 Struktur Project</li>
-<li>1.4 Setup Awal &amp; Menjalankan Server</li>
-<li><strong>Bab 2</strong> — CRUD Watchlist: Logika Bisnis Pertama Kita</li>
-<li>2.1 Apa itu CRUD?</li>
-<li>2.2 Merencanakan Endpoint</li>
-<li>2.3 Simulasi Database dengan File JSON</li>
-<li>2.4 Memahami <code>utils/db.js</code></li>
-<li>2.5 Membuat Routes Watchlist</li>
-<li>2.6 Uji Coba CRUD</li>
-<li><strong>Bab 3</strong> — Keamanan Password: Kenalan dengan bcrypt</li>
-<li>3.1 Bahaya Menyimpan Password Polos</li>
-<li>3.2 Apa itu Hashing?</li>
-<li>3.3 Kenapa Harus bcrypt?</li>
-<li>3.4 Implementasi Login dengan bcrypt</li>
-<li><strong>Bab 4</strong> — Autentikasi: Kenalan dengan JWT</li>
-<li>4.1 Masalah HTTP yang Stateless</li>
-<li>4.2 Apa itu JWT?</li>
-<li>4.3 Cara Kerja JWT dalam Autentikasi</li>
-<li>4.4 Implementasi JWT di Login</li>
-<li>4.5 Membuat Middleware <code>authenticate</code></li>
-<li><strong>Bab 5</strong> — Otorisasi: Siapa Boleh Melakukan Apa?</li>
-<li>5.1 Autentikasi vs Otorisasi</li>
-<li>5.2 Role-Based Access Control (RBAC)</li>
-<li>5.3 Membuat Middleware <code>authorizeModification</code></li>
-<li>5.4 Memasang Middleware ke Routes</li>
-<li>5.5 Uji Coba Keseluruhan</li>
+<li><strong>Bab 1</strong> — Mengenal REST API dan Setup Project
+  <ul>
+    <li>1.1 Apa itu REST API?</li>
+    <li>1.2 Teknologi yang Akan Kita Pakai</li>
+    <li>1.3 Struktur Project</li>
+    <li>1.4 Setup Awal &amp; Menjalankan Server</li>
+  </ul>
+</li>
+<li><strong>Bab 2</strong> — CRUD Watchlist: Logika Bisnis Pertama Kita
+  <ul>
+    <li>2.1 Apa itu CRUD?</li>
+    <li>2.2 Merencanakan Endpoint</li>
+    <li>2.3 Simulasi Database dengan File JSON</li>
+    <li>2.4 Memahami <code>utils/db.js</code></li>
+    <li>2.5 Membuat Routes Watchlist</li>
+    <li>2.6 Uji Coba CRUD</li>
+  </ul>
+</li>
+<li><strong>Bab 3</strong> — Keamanan Password: Kenalan dengan bcrypt
+  <ul>
+    <li>3.1 Bahaya Menyimpan Password Polos</li>
+    <li>3.2 Apa itu Hashing?</li>
+    <li>3.3 Kenapa Harus bcrypt?</li>
+    <li>3.4 Implementasi Login dengan bcrypt</li>
+  </ul>
+</li>
+<li><strong>Bab 4</strong> — Autentikasi: Kenalan dengan JWT
+  <ul>
+    <li>4.1 Masalah HTTP yang Stateless</li>
+    <li>4.2 Apa itu JWT?</li>
+    <li>4.3 Cara Kerja JWT dalam Autentikasi</li>
+    <li>4.4 Implementasi JWT di Login</li>
+    <li>4.5 Membuat Middleware <code>authenticate</code></li>
+  </ul>
+</li>
+<li><strong>Bab 5</strong> — Otorisasi: Siapa Boleh Melakukan Apa?
+  <ul>
+    <li>5.1 Autentikasi vs Otorisasi</li>
+    <li>5.2 Role-Based Access Control (RBAC)</li>
+    <li>5.3 Membuat Middleware <code>authorizeModification</code></li>
+    <li>5.4 Memasang Middleware ke Routes</li>
+    <li>5.5 Uji Coba Keseluruhan</li>
+  </ul>
+</li>
 </ul>
 <hr/>
   </article>
@@ -490,6 +526,10 @@ Buku ini cocok buat kamu yang sudah paham JavaScript dasar dan penasaran bagaima
 - Setiap aksi diwakili oleh <strong>HTTP Method</strong> tertentu (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>)
 - Tidak ada tampilan — hanya <strong>data</strong></p>
 <p><strong>Analogi yang mudah diingat:</strong></p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/rest_api_analogy_1788748392974.jpg" alt="Analogi REST API" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: REST API bekerja layaknya pramusaji restoran yang menghubungkan klien dengan server/database (dapur).</em></p>
+</div>
 <blockquote class="callout callout-note">
 <p>REST API itu seperti pramusaji di restoran. Kamu (client) memberi tahu pramusaji (API) apa yang kamu mau. Pramusaji mengambilkan dari dapur (server/database), lalu mengantarkan hasilnya ke mejamu. Dapur tidak perlu tahu siapa kamu. Kamu pun tidak perlu masuk ke dapur sendiri.</p>
 </blockquote>
@@ -637,6 +677,10 @@ Express (di atasnya)  →  Lebih ringkas, mudah dibaca, mudah dipelihara
 <div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
 <article class="page chapter-page" id="bab-2"><header class="chapter-head"><div class="chapter-num">Bab 2</div><h1 class="chapter-title">CRUD Watchlist: Logika Bisnis Pertama Kita</h1></header><div class="chapter-body"><h2>2.1 Apa itu CRUD?</h2>
 <p><strong>CRUD</strong> adalah singkatan dari empat operasi dasar dalam pengelolaan data:</p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/crud_concept_1788749714623.jpg" alt="Konsep CRUD" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Empat operasi dasar database (Create, Read, Update, Delete) yang dipetakan ke dalam metode HTTP.</em></p>
+</div>
 <table class="styled-table">
 <thead>
 <tr>
@@ -1000,6 +1044,10 @@ DELETE http://localhost:3000/api/watchlist/1/movies/2
 <hr/>
 <h2>3.2 Apa itu Hashing?</h2>
 <p><strong>Hashing</strong> adalah proses mengubah data (misalnya password) menjadi "sidik jari" digital yang panjangnya tetap — dan <strong>tidak bisa dikembalikan ke bentuk aslinya</strong>.</p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/hashing_concept_1788748408566.jpg" alt="Konsep Hashing" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Hashing seperti mesin penggiling daging; data teks polos dimasukkan dan menghasilkan kode hash satu arah.</em></p>
+</div>
 <div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>"parent456"  →  [fungsi hash]  →  "$2a$10$V4nCDj9z1mpYmhilx43xy..."
 </code></pre></div>
 <p>Ciri-ciri hashing:</p>
@@ -1139,6 +1187,10 @@ Body: { "username": "tidak_ada", "password": "apapun" }
 <div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
 <article class="page chapter-page" id="bab-4"><header class="chapter-head"><div class="chapter-num">Bab 4</div><h1 class="chapter-title">Autentikasi: Kenalan dengan JWT</h1></header><div class="chapter-body"><h2>4.1 Masalah HTTP yang Stateless</h2>
 <p>HTTP adalah protokol yang <strong>stateless</strong> — setiap request yang masuk ke server dianggap sebagai request baru yang independen. Server tidak menyimpan "ingatan" tentang siapa yang sudah login.</p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/stateless_http_1788748420721.jpg" alt="HTTP Stateless" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Karena HTTP itu stateless (mudah lupa), klien harus selalu menunjukkan token identitas setiap kali melakukan request.</em></p>
+</div>
 <p><strong>Analogi:</strong></p>
 <blockquote class="callout callout-note">
 <p>Bayangkan kamu masuk ke sebuah gedung yang dijaga satpam. Satpam itu punya penyakit aneh — dia kehilangan memori setiap beberapa detik. Setiap kali kamu melewati pintu, dia tidak mengenalimu dan meminta kamu menunjukkan identitas lagi dari awal.</p>
@@ -1152,6 +1204,10 @@ Body: { "username": "tidak_ada", "password": "apapun" }
 <hr/>
 <h2>4.2 Apa itu JWT?</h2>
 <p><strong>JWT</strong> (<em>JSON Web Token</em>) adalah standar terbuka untuk membuat token yang berisi informasi dan bisa diverifikasi keasliannya.</p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/jwt_anatomy_1788749421127.jpg" alt="Anatomi JWT" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Anatomi JWT yang terbagi menjadi tiga bagian: Header (Merah), Payload (Hijau), dan Signature (Biru).</em></p>
+</div>
 <p>Sebuah JWT terdiri dari tiga bagian yang dipisahkan oleh tanda titik (<code>.</code>):</p>
 <div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InBhcmVudCJ9.abc123xyz
        ↑                          ↑                          ↑
@@ -1453,6 +1509,10 @@ Authorization: Bearer &lt;token-dari-langkah-1&gt;
 <hr/>
 <h2>5.2 Role-Based Access Control (RBAC)</h2>
 <p><strong>RBAC</strong> (<em>Role-Based Access Control</em>) adalah pendekatan otorisasi yang paling umum. Setiap pengguna memiliki <strong>role</strong> (peran), dan setiap role memiliki hak akses yang berbeda.</p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/rbac_roles_1788749432664.jpg" alt="Role-Based Access Control" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Role Parent memiliki akses master ke semua daftar film, sedangkan Child hanya bisa mengakses miliknya sendiri.</em></p>
+</div>
 <p>Di project kita, ada dua role:
 - <strong><code>parent</code></strong> — Bisa melakukan modifikasi (tambah/ubah/hapus) ke watchlist siapapun
 - <strong><code>child</code></strong> — Hanya bisa memodifikasi watchlist milik sendiri</p>
@@ -1603,6 +1663,10 @@ Authorization: Bearer &lt;token-dari-langkah-1&gt;
 <span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
 </code></pre></div>
 <p><strong>Alur middleware yang terjadi untuk setiap request:</strong></p>
+<div class="illustration-container" style="text-align: center; margin: 2rem 0;">
+  <img src="images/middleware_flow_1788748432580.jpg" alt="Alur Middleware" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+  <p style="font-size: 0.9em; color: #666; margin-top: 0.5rem;"><em>Ilustrasi: Middleware bekerja seperti pos pemeriksaan beruntun. Autentikasi mengecek identitas, Otorisasi mengecek hak akses.</em></p>
+</div>
 <div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">javascript</span></div><pre><span></span><code>Semua route:
   Request → [authenticate] → route handler
 
