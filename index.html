@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membangun Family Movie Watchlist API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,600;9..144,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Source+Serif+4:ital,opsz@1,8..60&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ Syntax highlighting (Pygments · One Dark) ============ */
+pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.hl .hll { background-color: #ffffcc }
+.hl { background: #282C34; color: #ABB2BF }
+.hl .c { color: #7F848E } /* Comment */
+.hl .err { color: #ABB2BF } /* Error */
+.hl .esc { color: #ABB2BF } /* Escape */
+.hl .g { color: #ABB2BF } /* Generic */
+.hl .k { color: #C678DD } /* Keyword */
+.hl .l { color: #ABB2BF } /* Literal */
+.hl .n { color: #E06C75 } /* Name */
+.hl .o { color: #56B6C2 } /* Operator */
+.hl .x { color: #ABB2BF } /* Other */
+.hl .p { color: #ABB2BF } /* Punctuation */
+.hl .ch { color: #7F848E } /* Comment.Hashbang */
+.hl .cm { color: #7F848E } /* Comment.Multiline */
+.hl .cp { color: #7F848E } /* Comment.Preproc */
+.hl .cpf { color: #7F848E } /* Comment.PreprocFile */
+.hl .c1 { color: #7F848E } /* Comment.Single */
+.hl .cs { color: #7F848E } /* Comment.Special */
+.hl .gd { color: #E06C75 } /* Generic.Deleted */
+.hl .ge { color: #ABB2BF; font-style: italic } /* Generic.Emph */
+.hl .ges { color: #ABB2BF } /* Generic.EmphStrong */
+.hl .gr { color: #E06C75 } /* Generic.Error */
+.hl .gh { color: #ABB2BF; font-weight: bold } /* Generic.Heading */
+.hl .gi { color: #98C379 } /* Generic.Inserted */
+.hl .go { color: #E06C75 } /* Generic.Output */
+.hl .gp { color: #ABB2BF } /* Generic.Prompt */
+.hl .gs { color: #ABB2BF; font-weight: bold } /* Generic.Strong */
+.hl .gu { color: #ABB2BF; font-weight: bold } /* Generic.Subheading */
+.hl .gt { color: #E06C75 } /* Generic.Traceback */
+.hl .kc { color: #E5C07B } /* Keyword.Constant */
+.hl .kd { color: #C678DD } /* Keyword.Declaration */
+.hl .kn { color: #C678DD } /* Keyword.Namespace */
+.hl .kp { color: #C678DD } /* Keyword.Pseudo */
+.hl .kr { color: #C678DD } /* Keyword.Reserved */
+.hl .kt { color: #E5C07B } /* Keyword.Type */
+.hl .ld { color: #ABB2BF } /* Literal.Date */
+.hl .m { color: #D19A66 } /* Literal.Number */
+.hl .s { color: #98C379 } /* Literal.String */
+.hl .na { color: #E06C75 } /* Name.Attribute */
+.hl .nb { color: #E5C07B } /* Name.Builtin */
+.hl .nc { color: #E5C07B } /* Name.Class */
+.hl .no { color: #E06C75 } /* Name.Constant */
+.hl .nd { color: #61AFEF } /* Name.Decorator */
+.hl .ni { color: #E06C75 } /* Name.Entity */
+.hl .ne { color: #E06C75 } /* Name.Exception */
+.hl .nf { color: #61AFEF; font-weight: bold } /* Name.Function */
+.hl .nl { color: #E06C75 } /* Name.Label */
+.hl .nn { color: #E06C75 } /* Name.Namespace */
+.hl .nx { color: #E06C75 } /* Name.Other */
+.hl .py { color: #E06C75 } /* Name.Property */
+.hl .nt { color: #E06C75 } /* Name.Tag */
+.hl .nv { color: #E06C75 } /* Name.Variable */
+.hl .ow { color: #56B6C2 } /* Operator.Word */
+.hl .pm { color: #ABB2BF } /* Punctuation.Marker */
+.hl .w { color: #ABB2BF } /* Text.Whitespace */
+.hl .mb { color: #D19A66 } /* Literal.Number.Bin */
+.hl .mf { color: #D19A66 } /* Literal.Number.Float */
+.hl .mh { color: #D19A66 } /* Literal.Number.Hex */
+.hl .mi { color: #D19A66 } /* Literal.Number.Integer */
+.hl .mo { color: #D19A66 } /* Literal.Number.Oct */
+.hl .sa { color: #98C379 } /* Literal.String.Affix */
+.hl .sb { color: #98C379 } /* Literal.String.Backtick */
+.hl .sc { color: #98C379 } /* Literal.String.Char */
+.hl .dl { color: #98C379 } /* Literal.String.Delimiter */
+.hl .sd { color: #98C379 } /* Literal.String.Doc */
+.hl .s2 { color: #98C379 } /* Literal.String.Double */
+.hl .se { color: #98C379 } /* Literal.String.Escape */
+.hl .sh { color: #98C379 } /* Literal.String.Heredoc */
+.hl .si { color: #98C379 } /* Literal.String.Interpol */
+.hl .sx { color: #98C379 } /* Literal.String.Other */
+.hl .sr { color: #98C379 } /* Literal.String.Regex */
+.hl .s1 { color: #98C379 } /* Literal.String.Single */
+.hl .ss { color: #98C379 } /* Literal.String.Symbol */
+.hl .bp { color: #E5C07B } /* Name.Builtin.Pseudo */
+.hl .fm { color: #56B6C2; font-weight: bold } /* Name.Function.Magic */
+.hl .vc { color: #E06C75 } /* Name.Variable.Class */
+.hl .vg { color: #E06C75 } /* Name.Variable.Global */
+.hl .vi { color: #E06C75 } /* Name.Variable.Instance */
+.hl .vm { color: #E06C75 } /* Name.Variable.Magic */
+.hl .il { color: #D19A66 } /* Literal.Number.Integer.Long */
+
+/* ============ Tokens ============ */
+:root{
+  --ink: #23262B;
+  --ink-soft: #565C64;
+  --ink-faint: #8A9099;
+  --paper: #F6F3EA;
+  --paper-line: rgba(35,38,43,0.09);
+  --backdrop: #14171B;
+  --backdrop-line: rgba(255,255,255,0.10);
+  --gold: #B4842E;
+  --gold-deep: #8C6420;
+  --gold-tint: #EFE3C6;
+  --teal: #2E6864;
+  --teal-tint: #E1EBE9;
+  --brick: #A94A32;
+  --brick-tint: #F3E0D8;
+  --code-bg: #282C34;
+  --code-chrome: #21252B;
+  --radius-page: 6px;
+  --radius-chip: 4px;
+}
+
+*{ box-sizing: border-box; }
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background: var(--backdrop);
+  background-image:
+    radial-gradient(circle at 20% 0%, rgba(180,132,46,0.08), transparent 45%),
+    radial-gradient(circle at 85% 60%, rgba(46,104,100,0.10), transparent 50%);
+  color: var(--ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.book{
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3.5rem 1.25rem 6rem;
+}
+
+/* ============ Page shell ============ */
+.page{
+  background: var(--paper);
+  border-radius: var(--radius-page);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.35), 0 24px 48px -20px rgba(0,0,0,0.55);
+  padding: 4.25rem 4.5rem;
+}
+@media (max-width: 720px){
+  .book{ padding: 1.75rem 0.6rem 4rem; }
+  .page{ padding: 2.4rem 1.5rem; }
+}
+
+.page-divider{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 3.25rem 2rem;
+}
+.page-divider span{ flex: 1 1 auto; height: 1px; background: var(--backdrop-line); }
+.page-divider i{ width: 7px; height: 7px; border-radius: 50%; background: var(--gold); display: inline-block; box-shadow: 0 0 0 3px rgba(180,132,46,0.18); }
+
+/* ============ Cover ============ */
+.cover-page{ text-align: center; padding-top: 5.5rem; padding-bottom: 5rem; }
+.cover-kicker{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--gold-deep);
+  margin-bottom: 1.6rem;
+}
+.book-title{
+  font-family: "Fraunces", Georgia, serif;
+  font-optical-sizing: auto;
+  font-weight: 650;
+  font-size: clamp(2.1rem, 4.4vw, 3.35rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 auto 1.9rem;
+  max-width: 15ch;
+  color: var(--ink);
+}
+.cover-page hr{
+  width: 90px;
+  margin: 1.9rem auto 1.9rem;
+  border: none;
+  border-top: 2px solid var(--gold);
+}
+.cover-page h3{
+  font-family: "Source Serif 4", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.18rem;
+  color: var(--ink-soft);
+  max-width: 34ch;
+  margin: 0 auto 2.4rem;
+  line-height: 1.55;
+}
+.cover-page blockquote{
+  text-align: left;
+  max-width: 46ch;
+  margin: 2.6rem auto 0;
+  background: transparent;
+  border: 1px solid var(--paper-line);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-chip);
+  padding: 1.6rem 1.9rem;
+  font-style: normal;
+}
+.cover-page blockquote p{ margin: 0.5rem 0 0; color: var(--ink-soft); }
+.cover-page blockquote p:first-child{ margin-top: 0; }
+.cover-page blockquote strong{ color: var(--ink); }
+
+/* ============ Table of contents ============ */
+.toc-page h2:first-child, .preface-page h2:first-child{
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 650;
+  font-size: 1.9rem;
+  margin: 0 0 2.2rem;
+  color: var(--ink);
+}
+.toc-page ul{ list-style: none; margin: 0; padding: 0; }
+.toc-page > ul > li{
+  font-weight: 600;
+  font-size: 1.06rem;
+  padding: 0.85rem 0 0.85rem 0;
+  border-bottom: 1px solid var(--paper-line);
+}
+.toc-page > ul > li:last-child{ border-bottom: none; }
+.toc-page ul ul{ list-style: none; margin: 0.7rem 0 0.2rem; padding-left: 1.4rem; border-left: 1px solid var(--paper-line); }
+.toc-page ul ul li{
+  font-weight: 400;
+  font-size: 0.93rem;
+  color: var(--ink-soft);
+  padding: 0.32rem 0;
+}
+.toc-page li strong{ color: var(--gold-deep); }
+
+/* ============ Chapter header ============ */
+.chapter-page{ padding-top: 4rem; }
+.chapter-head{ margin-bottom: 3rem; }
+.chapter-num{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.chapter-title{
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 650;
+  font-size: clamp(1.7rem, 3.4vw, 2.35rem);
+  line-height: 1.18;
+  margin: 0;
+  color: var(--ink);
+  max-width: 22ch;
+}
+
+/* ============ Body typography ============ */
+.chapter-body, .preface-page, .toc-page{
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: var(--ink);
+}
+.chapter-body p, .preface-page p{ margin: 0 0 1.15rem; }
+.chapter-body > h2{
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  color: var(--ink);
+  margin: 3rem 0 1.1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--paper-line);
+}
+.chapter-body > h3{
+  font-family: "Source Serif 4", serif;
+  font-weight: 600;
+  font-size: 1.16rem;
+  color: var(--gold-deep);
+  margin: 2.3rem 0 0.9rem;
+}
+.chapter-body strong{ color: var(--ink); font-weight: 600; }
+.chapter-body em{ color: var(--ink-soft); }
+.chapter-body a{ color: var(--teal); }
+.chapter-body ul, .chapter-body ol{ padding-left: 1.35rem; margin: 0 0 1.15rem; }
+.chapter-body li{ margin: 0.3rem 0; }
+.chapter-body hr{
+  border: none;
+  border-top: 1px solid var(--paper-line);
+  width: 55%;
+  margin: 2.6rem auto;
+}
+code{
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.87em;
+  background: var(--gold-tint);
+  color: #6B4E14;
+  padding: 0.12em 0.4em;
+  border-radius: 4px;
+}
+h1 code, h2 code, h3 code{ background: none; padding: 0; color: inherit; }
+
+/* ============ Callouts (blockquote) ============ */
+blockquote.callout{
+  margin: 1.8rem 0;
+  padding: 1.3rem 1.6rem;
+  border-radius: var(--radius-chip);
+  font-style: italic;
+}
+blockquote.callout p{ margin: 0.5rem 0 0; }
+blockquote.callout p:first-child{ margin-top: 0; }
+blockquote.callout-note{
+  background: var(--teal-tint);
+  border-left: 3px solid var(--teal);
+  color: #274543;
+}
+blockquote.callout-warning{
+  background: var(--brick-tint);
+  border-left: 3px solid var(--brick);
+  color: #5C2A1A;
+}
+blockquote.callout code{ background: rgba(255,255,255,0.55); }
+
+/* ============ Tables ============ */
+table.styled-table{
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6rem 0 2rem;
+  font-size: 0.94rem;
+  font-family: "Source Serif 4", serif;
+}
+table.styled-table th{
+  background: var(--gold-tint);
+  color: #5C4310;
+  text-align: left;
+  font-weight: 600;
+  padding: 0.65rem 0.9rem;
+  border-bottom: 2px solid var(--gold);
+}
+table.styled-table td{
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--paper-line);
+  vertical-align: top;
+}
+table.styled-table tr:last-child td{ border-bottom: none; }
+table.styled-table code{ font-size: 0.85em; }
+
+/* ============ Code blocks ============ */
+.file-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.78rem;
+  color: var(--gold-deep);
+  background: var(--gold-tint);
+  border-radius: var(--radius-chip) var(--radius-chip) 0 0;
+  padding: 0.4rem 0.85rem;
+  margin: 1.4rem 0 -1px;
+  border: 1px solid rgba(180,132,46,0.35);
+  border-bottom: none;
+}
+.file-badge-icon{ opacity: 0.75; }
+.file-badge code{ background: none; padding: 0; color: inherit; font-weight: 600; }
+.file-badge + .code-block{ margin-top: 0; border-top-left-radius: 0; }
+
+.code-block{
+  background: var(--code-bg);
+  border-radius: var(--radius-page);
+  margin: 1.4rem 0 1.8rem;
+  overflow: hidden;
+  box-shadow: 0 8px 20px -12px rgba(0,0,0,0.6);
+}
+.code-chrome{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.9rem;
+  background: var(--code-chrome);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.code-dots{ display: inline-flex; gap: 5px; }
+.code-dots i{ width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.16); display: inline-block; }
+.code-lang{
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.45);
+  text-transform: lowercase;
+}
+.code-block pre{
+  margin: 0;
+  padding: 1.15rem 1.4rem 1.35rem;
+  overflow-x: auto;
+}
+.code-block code{
+  background: none;
+  padding: 0;
+  color: #ABB2BF;
+  font-size: 0.87rem;
+  line-height: 1.6;
+}
+
+/* ============ Print ============ */
+@media print{
+  body{ background: #fff; }
+  .book{ max-width: none; padding: 0; }
+  .page{ box-shadow: none; border-radius: 0; padding: 1.2in; page-break-after: always; }
+  .page-divider{ display: none; }
+  .code-block{ box-shadow: none; }
+}
+</style>
+</head>
+<body>
+<div class="book">
+
+  <article class="page cover-page">
+    <h1 class="book-title">Membangun Family Movie Watchlist API</h1>
+    <hr>
+    <h3>Belajar Node.js, Express, bcrypt, dan JWT dari Nol Sampai Jadi</h3>
+<blockquote class="callout callout-note">
+<p><strong>Untuk siapa buku ini?</strong>
+Buku ini cocok buat kamu yang sudah paham JavaScript dasar dan penasaran bagaimana cara membangun sebuah API yang sesungguhnya — lengkap dengan keamanan, autentikasi, dan otorisasi. Kita akan belajar sambil langsung membangun project nyata dari FreeCodeCamp.</p>
+</blockquote>
+  </article>
+
+  <div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+
+  <article class="page toc-page">
+    <h2>Daftar Isi</h2>
+<ul>
+<li><strong>Kata Pengantar</strong></li>
+<li><strong>Bab 1</strong> — Mengenal REST API dan Setup Project</li>
+<li>1.1 Apa itu REST API?</li>
+<li>1.2 Teknologi yang Akan Kita Pakai</li>
+<li>1.3 Struktur Project</li>
+<li>1.4 Setup Awal &amp; Menjalankan Server</li>
+<li><strong>Bab 2</strong> — CRUD Watchlist: Logika Bisnis Pertama Kita</li>
+<li>2.1 Apa itu CRUD?</li>
+<li>2.2 Merencanakan Endpoint</li>
+<li>2.3 Simulasi Database dengan File JSON</li>
+<li>2.4 Memahami <code>utils/db.js</code></li>
+<li>2.5 Membuat Routes Watchlist</li>
+<li>2.6 Uji Coba CRUD</li>
+<li><strong>Bab 3</strong> — Keamanan Password: Kenalan dengan bcrypt</li>
+<li>3.1 Bahaya Menyimpan Password Polos</li>
+<li>3.2 Apa itu Hashing?</li>
+<li>3.3 Kenapa Harus bcrypt?</li>
+<li>3.4 Implementasi Login dengan bcrypt</li>
+<li><strong>Bab 4</strong> — Autentikasi: Kenalan dengan JWT</li>
+<li>4.1 Masalah HTTP yang Stateless</li>
+<li>4.2 Apa itu JWT?</li>
+<li>4.3 Cara Kerja JWT dalam Autentikasi</li>
+<li>4.4 Implementasi JWT di Login</li>
+<li>4.5 Membuat Middleware <code>authenticate</code></li>
+<li><strong>Bab 5</strong> — Otorisasi: Siapa Boleh Melakukan Apa?</li>
+<li>5.1 Autentikasi vs Otorisasi</li>
+<li>5.2 Role-Based Access Control (RBAC)</li>
+<li>5.3 Membuat Middleware <code>authorizeModification</code></li>
+<li>5.4 Memasang Middleware ke Routes</li>
+<li>5.5 Uji Coba Keseluruhan</li>
+</ul>
+<hr/>
+  </article>
+
+  <div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+
+  <article class="page preface-page">
+    <h2>Kata Pengantar</h2>
+<p>Hei! Selamat datang di buku ini.</p>
+<p>Kalau kamu pernah bertanya-tanya, <em>"Bagaimana sih cara kerja login di aplikasi?"</em> atau <em>"Kenapa ada yang namanya token?"</em> — kamu ada di tempat yang tepat.</p>
+<p>Buku ini tidak akan langsung melempar kamu dengan kode yang panjang. Kita akan pelan-pelan. Setiap fitur yang kita bangun, kita akan mulai dengan bertanya: <strong>"Kenapa fitur ini perlu ada?"</strong> Baru setelah itu kita tulis kodenya bersama.</p>
+<p>Project yang kita bangun adalah <strong>Family Movie Watchlist API</strong> — sebuah API untuk keluarga yang ingin mencatat film apa saja yang sudah dan belum ditonton. Ada anggota keluarga yang berperan sebagai <code>parent</code> (orang tua) dan <code>child</code> (anak), dengan hak akses yang berbeda.</p>
+<p>Di akhir buku ini, kamu akan berhasil menyelesaikan challenge dari FreeCodeCamp dan memahami <em>mengapa</em> setiap baris kode itu ditulis.</p>
+<p>Yuk mulai!</p>
+<hr/>
+  </article>
+
+  <div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+
+  <article class="page chapter-page" id="bab-1"><header class="chapter-head"><div class="chapter-num">Bab 1</div><h1 class="chapter-title">Mengenal REST API dan Setup Project</h1></header><div class="chapter-body"><h2>1.1 Apa itu REST API?</h2>
+<p>Sebelum kita mulai nulis kode, kita perlu sepakat dulu soal apa yang sedang kita bangun.</p>
+<p><strong>API</strong> adalah singkatan dari <em>Application Programming Interface</em> — sebuah "jembatan" yang memungkinkan dua aplikasi berkomunikasi. Misalnya, aplikasi mobile berkomunikasi dengan server untuk mengambil data.</p>
+<p><strong>REST</strong> (<em>Representational State Transfer</em>) adalah aturan/gaya arsitektur untuk membuat API. Kalau API kita mengikuti aturan REST, maka disebut <strong>REST API</strong> atau <strong>RESTful API</strong>.</p>
+<p>Ciri-ciri REST API:
+- Berkomunikasi lewat <strong>HTTP</strong> (protokol yang sama dipakai browser)
+- Data dikirim/diterima biasanya dalam format <strong>JSON</strong>
+- Setiap aksi diwakili oleh <strong>HTTP Method</strong> tertentu (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>)
+- Tidak ada tampilan — hanya <strong>data</strong></p>
+<p><strong>Analogi yang mudah diingat:</strong></p>
+<blockquote class="callout callout-note">
+<p>REST API itu seperti pramusaji di restoran. Kamu (client) memberi tahu pramusaji (API) apa yang kamu mau. Pramusaji mengambilkan dari dapur (server/database), lalu mengantarkan hasilnya ke mejamu. Dapur tidak perlu tahu siapa kamu. Kamu pun tidak perlu masuk ke dapur sendiri.</p>
+</blockquote>
+<hr/>
+<h2>1.2 Teknologi yang Akan Kita Pakai</h2>
+<p>Coba buka file <code>package.json</code> di project ini:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>package.json</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"movie-api"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"module"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"express"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.2.1"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"helmet"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8.2.0"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"bcryptjs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.0.3"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"jsonwebtoken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9.0.3"</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ada 4 library di sini. Mari kita kenali satu per satu — bukan asal install, tapi paham dulu fungsinya.</p>
+<hr/>
+<h3><code>express</code> — Framework Web Server</h3>
+<p><strong>Express</strong> adalah framework untuk membangun web server di Node.js.</p>
+<p>Tanpa Express, membuat server HTTP di Node.js itu cukup rumit — kita harus menulis banyak kode manual untuk menangani routing, parsing body, dan sebagainya. Express menyederhanakan semua itu.</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>Node.js (built-in)    →  Perlu nulis banyak kode manual
+Express (di atasnya)  →  Lebih ringkas, mudah dibaca, mudah dipelihara
+</code></pre></div>
+<p><strong>Kapan dipakai?</strong> Dari awal sampai akhir — ini tulang punggung server kita.</p>
+<hr/>
+<h3><code>helmet</code> — Keamanan HTTP Headers</h3>
+<p><strong>Helmet</strong> adalah library yang menambahkan HTTP response headers secara otomatis untuk melindungi aplikasi dari beberapa serangan web umum.</p>
+<p>Kamu mungkin bertanya: <em>"Emangnya apa bahayanya kalau tidak pakai helmet?"</em></p>
+<p>Beberapa serangan yang bisa dicegah:
+- <strong>Clickjacking</strong> — website lain bisa menyisipkan halaman kita di dalam <code>iframe</code> tersembunyi untuk menipu pengguna
+- <strong>MIME sniffing</strong> — browser menebak-nebak tipe file yang bisa dieksploitasi
+- <strong>Information leakage</strong> — header default Express membocorkan info server (<code>X-Powered-By: Express</code>)</p>
+<p>Helmet mengaktifkan proteksi-proteksi ini dengan satu baris kode. Mudah dan penting.</p>
+<p><strong>Kapan dipakai?</strong> Langsung di awal saat setup server.</p>
+<hr/>
+<h3><code>bcryptjs</code> — Hashing Password</h3>
+<p><strong>bcrypt</strong> adalah algoritma <em>hashing</em> yang dirancang khusus untuk menyimpan password dengan aman.</p>
+<p>Kamu pasti sudah pernah dengar: <em>"Jangan simpan password dalam bentuk polos!"</em> Nah, bcrypt adalah solusinya.</p>
+<p>Kita tidak akan pakai bcrypt dulu di bab ini. Kita akan mempelajari konsepnya secara mendalam di <strong>Bab 3</strong>, lalu baru mengimplementasikannya di sana.</p>
+<hr/>
+<h3><code>jsonwebtoken</code> — Token Autentikasi</h3>
+<p><strong>JWT</strong> (<em>JSON Web Token</em>) adalah standar untuk membuat "kartu identitas digital" yang bisa diverifikasi keasliannya.</p>
+<p>Setelah pengguna login, server memberikan JWT. Pengguna menyertakan JWT ini di setiap request berikutnya — seperti menunjukkan kartu identitas setiap kali masuk ke gedung.</p>
+<p>Sama seperti bcrypt, kita tidak akan pakai JWT dulu. Kita pelajari konsepnya di <strong>Bab 4</strong>, lalu implementasi di bab yang sama.</p>
+<blockquote class="callout callout-note">
+<p><strong>Kenapa tidak langsung pakai semua dari awal?</strong></p>
+<p>Karena kalau semua langsung disatukan, kamu akan bingung: mana kode untuk logika bisnis, mana kode untuk keamanan. Kita bangun lapisan demi lapisan agar pemahaman kamu solid.</p>
+</blockquote>
+<hr/>
+<h2>1.3 Struktur Project</h2>
+<p>Ini adalah struktur folder project kita yang akan jadi setelah selesai:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>build-a-family-movie-watchlist-api/
+│
+├── index.js                    ← Titik masuk: server berjalan dari sini
+│
+├── routes/
+│   ├── auth.js                 ← Endpoint login (POST /api/auth/login)
+│   └── watchlist.js            ← Endpoint CRUD watchlist
+│
+├── middleware/
+│   ├── authenticate.js         ← "Siapa kamu?" — cek token JWT
+│   └── authorize.js            ← "Boleh tidak?" — cek role &amp; kepemilikan
+│
+├── utils/
+│   └── db.js                   ← Fungsi baca/tulis data (sudah disediakan)
+│
+├── data/
+│   ├── users.json              ← Data pengguna keluarga Miller
+│   └── watchlists.json         ← Data daftar film per pengguna
+│
+├── .env                        ← Konfigurasi (PORT, JWT_SECRET)
+└── package.json
+</code></pre></div>
+<p><strong>Kenapa middleware dipisah jadi dua file?</strong></p>
+<p>Perhatikan bahwa kita memiliki <code>authenticate.js</code> dan <code>authorize.js</code> sebagai dua file terpisah. Ini bukan tanpa alasan:</p>
+<ul>
+<li><code>authenticate.js</code> punya satu tanggung jawab: <em>"Apakah request ini punya token yang valid?"</em></li>
+<li><code>authorize.js</code> punya satu tanggung jawab: <em>"Apakah user ini punya hak untuk melakukan aksi ini?"</em></li>
+</ul>
+<p>Dengan memisahkannya, kode lebih mudah dibaca, dites, dan dipelihara. Ini yang disebut prinsip <strong>Single Responsibility</strong> — setiap modul punya satu alasan untuk berubah.</p>
+<hr/>
+<h2>1.4 Setup Awal &amp; Menjalankan Server</h2>
+<h3>Install Dependencies</h3>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>npm<span class="w"> </span>install
+</code></pre></div>
+<p>Perintah ini membaca <code>package.json</code> dan mengunduh semua library ke folder <code>node_modules</code>.</p>
+<hr/>
+<h3>File <code>.env</code> — Konfigurasi Rahasia</h3>
+<p>Buka file <code>.env</code>:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>.env</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>PORT=3000
+</code></pre></div>
+<p>File <code>.env</code> adalah tempat menyimpan konfigurasi yang bisa berubah tergantung lingkungan, atau yang sifatnya rahasia.</p>
+<p><strong>Kenapa tidak tulis langsung di kode?</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="c1">// ❌ Cara yang kurang baik</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mf">3000</span><span class="p">);</span>
+
+<span class="c1">// ✅ Cara yang lebih baik</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span><span class="p">);</span>
+</code></pre></div>
+<p>Dengan <code>process.env.PORT</code>, nilai dibaca dari environment. Di production, PORT bisa berbeda-beda tergantung konfigurasi server. Dan yang paling penting: file <code>.env</code> tidak perlu di-commit ke Git (masukkan ke <code>.gitignore</code>) sehingga secret key tidak bocor ke publik.</p>
+<hr/>
+<h3>Memahami <code>index.js</code></h3>
+<p>File <code>index.js</code> adalah pintu masuk aplikasi. Ini yang pertama dijalankan ketika server dinyalakan:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>index.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">terminal</span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">helmet</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"helmet"</span><span class="p">;</span>
+
+<span class="k">import</span><span class="w"> </span><span class="nx">watchlistRoutes</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./routes/watchlist.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">();</span>
+
+<span class="c1">// Middleware keamanan HTTP headers</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">helmet</span><span class="p">());</span>
+
+<span class="c1">// Middleware agar Express bisa membaca body JSON dari request</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+
+<span class="c1">// Route untuk cek server aktif</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s2">"Family Movie Watchlist API"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Semua route watchlist diakses dengan prefix /api/watchlist</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">"/api/watchlist"</span><span class="p">,</span><span class="w"> </span><span class="nx">watchlistRoutes</span><span class="p">);</span>
+
+<span class="c1">// Jalankan server</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Server running on port </span><span class="si">${</span><span class="nx">PORT</span><span class="si">}</span><span class="sb">...`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+<p><strong>Penjelasan baris penting:</strong></p>
+<p><code>app.use(express.json())</code> — Middleware ini mengubah body request dari teks mentah menjadi objek JavaScript. Tanpa ini, <code>req.body</code> akan selalu <code>undefined</code> saat client mengirim data JSON.</p>
+<p><code>app.use("/api/watchlist", watchlistRoutes)</code> — Me-<em>mount</em> semua route dari file <code>routes/watchlist.js</code> ke path <code>/api/watchlist</code>. Artinya route <code>/:userId</code> di dalam file tersebut akan diakses sebagai <code>/api/watchlist/:userId</code>.</p>
+<hr/>
+<h3>Jalankan Server</h3>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>npm<span class="w"> </span>start
+</code></pre></div>
+<p>Kalau berhasil:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>Server running on port 3000...
+</code></pre></div>
+<p>Buka browser dan akses <code>http://localhost:3000</code> — seharusnya muncul teks <strong>"Family Movie Watchlist API"</strong>. ✅</p>
+<hr/></div></article>
+<div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+<article class="page chapter-page" id="bab-2"><header class="chapter-head"><div class="chapter-num">Bab 2</div><h1 class="chapter-title">CRUD Watchlist: Logika Bisnis Pertama Kita</h1></header><div class="chapter-body"><h2>2.1 Apa itu CRUD?</h2>
+<p><strong>CRUD</strong> adalah singkatan dari empat operasi dasar dalam pengelolaan data:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Singkatan</th>
+<th>Operasi</th>
+<th>HTTP Method</th>
+<th>Contoh di project kita</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C</strong>reate</td>
+<td>Tambah data baru</td>
+<td><code>POST</code></td>
+<td>Tambah film baru ke watchlist</td>
+</tr>
+<tr>
+<td><strong>R</strong>ead</td>
+<td>Baca / ambil data</td>
+<td><code>GET</code></td>
+<td>Lihat daftar film</td>
+</tr>
+<tr>
+<td><strong>U</strong>pdate</td>
+<td>Ubah data yang ada</td>
+<td><code>PUT</code></td>
+<td>Tandai film sebagai sudah ditonton</td>
+</tr>
+<tr>
+<td><strong>D</strong>elete</td>
+<td>Hapus data</td>
+<td><code>DELETE</code></td>
+<td>Hapus film dari watchlist</td>
+</tr>
+</tbody>
+</table>
+<p>Hampir semua aplikasi — dari to-do list sederhana sampai platform e-commerce besar — pada dasarnya adalah CRUD yang dibalut dengan logika bisnis.</p>
+<hr/>
+<h2>2.2 Merencanakan Endpoint</h2>
+<p>Sebelum menulis kode, rencanakan endpoint terlebih dahulu. Ini yang akan kita buat:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Method</th>
+<th>Endpoint</th>
+<th>Deskripsi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/watchlist/:userId</code></td>
+<td>Lihat semua film di watchlist milik user</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/watchlist/:userId/movies</code></td>
+<td>Tambah film baru ke watchlist user</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/watchlist/:userId/movies/:movieId</code></td>
+<td>Update data film tertentu</td>
+</tr>
+<tr>
+<td><code>DELETE</code></td>
+<td><code>/api/watchlist/:userId/movies/:movieId</code></td>
+<td>Hapus film tertentu dari watchlist</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Mengapa POST, PUT, DELETE menggunakan <code>/movies</code> di path-nya?</strong></p>
+<p>Ini adalah konvensi REST yang baik. Dengan <code>/movies</code>, endpoint kita jadi lebih deskriptif dan jelas:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>/api/watchlist/1          → Resource: watchlist milik user 1
+/api/watchlist/1/movies   → Resource: koleksi film dalam watchlist user 1
+/api/watchlist/1/movies/2 → Resource: film ke-2 dalam watchlist user 1
+</code></pre></div>
+<p>URL yang baik harus <em>self-documenting</em> — orang yang membacanya langsung mengerti tanpa perlu penjelasan tambahan.</p>
+<p><strong>Apa itu <code>:userId</code> dan <code>:movieId</code>?</strong></p>
+<p>Itu disebut <strong>URL Parameter</strong> — bagian URL yang nilainya dinamis. Tanda <code>:</code> menandakan variabel:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>GET /api/watchlist/1   → userId = "1" (Dad Miller)
+GET /api/watchlist/3   → userId = "3" (Jake Miller)
+</code></pre></div>
+<hr/>
+<h2>2.3 Simulasi Database dengan File JSON</h2>
+<p>Di project ini, kita menggunakan file JSON sebagai "database" sementara. Di dunia nyata, kita akan pakai database seperti PostgreSQL atau MongoDB — tapi untuk belajar, ini sudah cukup.</p>
+<p><strong>Data Pengguna</strong> (<code>data/users.json</code>):</p>
+<p>Keluarga Miller terdiri dari 4 anggota:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"David Miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dad_miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parent"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"passwordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2a$10$V4nCDj9z..."</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sarah Miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mom_miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parent"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"passwordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2a$10$Dct9yQR..."</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Jake Miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jake_miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"child"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"passwordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2a$10$SWOT8Vt..."</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sophie Miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sophie_miller"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"child"</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">"passwordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2a$10$hqW9lPm..."</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div>
+<blockquote class="callout callout-note">
+<p><strong>Kenapa ada field <code>passwordHash</code> dan bukan <code>password</code>?</strong>
+Password tidak boleh disimpan dalam bentuk polos. Yang tersimpan adalah hasil <em>hashing</em> password. Kita akan pelajari ini secara mendalam di Bab 3.</p>
+</blockquote>
+<p><strong>Data Watchlist</strong> (<code>data/watchlists.json</code>):</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>data/watchlists.json</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The Dark Knight"</span><span class="p">,</span><span class="w"> </span><span class="nt">"genre"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Action"</span><span class="p">,</span><span class="w"> </span><span class="nt">"watched"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Inception"</span><span class="p">,</span><span class="w"> </span><span class="nt">"genre"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sci-Fi"</span><span class="p">,</span><span class="w"> </span><span class="nt">"watched"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Avengers: Endgame"</span><span class="p">,</span><span class="w"> </span><span class="nt">"genre"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Action"</span><span class="p">,</span><span class="w"> </span><span class="nt">"watched"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Setiap user punya watchlist sendiri. Key-nya adalah user ID (sebagai string), dan value-nya adalah array film.</p>
+<hr/>
+<h2>2.4 Memahami <code>utils/db.js</code></h2>
+<p>File ini sudah disediakan di project. Isinya adalah fungsi-fungsi untuk membaca dan menulis data ke file JSON.</p>
+<p><strong>Kenapa dipisah ke file sendiri?</strong></p>
+<p>Ini prinsip <strong>Separation of Concerns</strong> — logika penyimpanan data dipisah dari logika routing. Kalau suatu hari nanti kita pindah dari file JSON ke database sungguhan, kita cukup ubah file <code>db.js</code> ini saja — file route tidak perlu disentuh sama sekali.</p>
+<p>Fungsi-fungsi yang tersedia dan yang akan kita pakai:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Fungsi</th>
+<th>Input</th>
+<th>Output</th>
+<th>Kegunaan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>findByUsername(username)</code></td>
+<td>string</td>
+<td>user object / null</td>
+<td>Cari user saat login</td>
+</tr>
+<tr>
+<td><code>findById(id)</code></td>
+<td>number</td>
+<td>user object / null</td>
+<td>Cek apakah user ada</td>
+</tr>
+<tr>
+<td><code>getWatchlist(userId)</code></td>
+<td>number</td>
+<td>array / null</td>
+<td>Ambil watchlist milik user</td>
+</tr>
+<tr>
+<td><code>addMovie(userId, movieData)</code></td>
+<td>number, object</td>
+<td>movie object / null</td>
+<td>Tambah film baru</td>
+</tr>
+<tr>
+<td><code>updateMovie(userId, movieId, updates)</code></td>
+<td>number, number, object</td>
+<td>movie object / null</td>
+<td>Update film</td>
+</tr>
+<tr>
+<td><code>deleteMovie(userId, movieId)</code></td>
+<td>number, number</td>
+<td>true / null</td>
+<td>Hapus film</td>
+</tr>
+</tbody>
+</table>
+<blockquote class="callout callout-note">
+<p><strong>Fungsi mengembalikan <code>null</code> kalau apa?</strong>
+Kalau <code>userId</code> tidak ditemukan, atau <code>movieId</code> tidak ada di watchlist user tersebut. Kita akan menggunakan nilai <code>null</code> ini untuk mengirim response <code>404 Not Found</code>.</p>
+</blockquote>
+<hr/>
+<h2>2.5 Membuat Routes Watchlist</h2>
+<p>Buat file baru: <code>routes/watchlist.js</code></p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>routes/watchlist.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">getWatchlist</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">addMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">updateMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">deleteMovie</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// GET /api/watchlist/:userId</span>
+<span class="c1">// Mengambil semua film dalam watchlist milik seorang user</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"/:userId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">watchlist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getWatchlist</span><span class="p">(</span><span class="nx">userId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">watchlist</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">watchlist</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// POST /api/watchlist/:userId/movies</span>
+<span class="c1">// Menambahkan film baru ke watchlist user</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/:userId/movies"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">genre</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"title and genre are required"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">addMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">movie</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">201</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">movie</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// PUT /api/watchlist/:userId/movies/:movieId</span>
+<span class="c1">// Mengupdate data film (misalnya menandai sudah ditonton)</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">updates</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">updateMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">,</span><span class="w"> </span><span class="nx">updates</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">updated</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">updated</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// DELETE /api/watchlist/:userId/movies/:movieId</span>
+<span class="c1">// Menghapus film dari watchlist</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">deleteMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie deleted successfully"</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>Hal penting yang perlu diperhatikan:</strong></p>
+<p><code>Number(req.params.userId)</code> — Parameter URL selalu berupa <em>string</em>. ID di data kita berupa angka. Kalau tidak dikonversi, perbandingan <code>"1" === 1</code> menghasilkan <code>false</code> dan pencarian akan selalu gagal.</p>
+<p><strong>HTTP Status Code</strong> — Bukan sekadar formalitas:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Kode</th>
+<th>Nama</th>
+<th>Kapan digunakan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>200</code></td>
+<td>OK</td>
+<td>Request berhasil (default GET, PUT, DELETE)</td>
+</tr>
+<tr>
+<td><code>201</code></td>
+<td>Created</td>
+<td>Data baru berhasil dibuat (POST)</td>
+</tr>
+<tr>
+<td><code>400</code></td>
+<td>Bad Request</td>
+<td>Input dari client salah atau kurang</td>
+</tr>
+<tr>
+<td><code>404</code></td>
+<td>Not Found</td>
+<td>Data yang dicari tidak ada</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2>2.6 Uji Coba CRUD</h2>
+<p>Jalankan server:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>npm<span class="w"> </span>start
+</code></pre></div>
+<p>Test semua endpoint:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code># Lihat watchlist milik user ID 1 (Dad)
+GET http://localhost:3000/api/watchlist/1
+
+# Tambah film baru ke watchlist user ID 1
+POST http://localhost:3000/api/watchlist/1/movies
+Content-Type: application/json
+Body: { "title": "Interstellar", "genre": "Sci-Fi" }
+
+# Tandai film ID 1 sebagai sudah ditonton
+PUT http://localhost:3000/api/watchlist/1/movies/1
+Content-Type: application/json
+Body: { "watched": true }
+
+# Hapus film ID 2 dari watchlist user ID 1
+DELETE http://localhost:3000/api/watchlist/1/movies/2
+</code></pre></div>
+<p>Semuanya berjalan?</p>
+<blockquote class="callout callout-warning">
+<p><strong>⚠️ Coba perhatikan sesuatu...</strong></p>
+<p>Siapapun bisa mengakses, menambah, mengubah, bahkan menghapus watchlist milik user manapun — tanpa perlu tahu siapa dirinya. Ini jelas tidak aman!</p>
+<p>Sebelum kita bisa "mengamankan" API ini, kita perlu tahu dulu: <strong>bagaimana server mengetahui siapa yang sedang melakukan request?</strong> Inilah yang akan kita jawab di Bab 3 dan 4.</p>
+</blockquote>
+<hr/></div></article>
+<div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+<article class="page chapter-page" id="bab-3"><header class="chapter-head"><div class="chapter-num">Bab 3</div><h1 class="chapter-title">Keamanan Password: Kenalan dengan bcrypt</h1></header><div class="chapter-body"><h2>3.1 Bahaya Menyimpan Password Polos</h2>
+<p>Sebelum kita tambahkan fitur login, ada satu hal yang harus kita pahami benar-benar dulu.</p>
+<p>Bayangkan kita menyimpan password seperti ini di database:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dad_miller"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parent456"</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Ini disebut menyimpan password dalam bentuk <strong>plaintext</strong> (teks polos). Dan ini adalah <strong>praktik yang sangat berbahaya</strong>.</p>
+<p><strong>Kenapa berbahaya?</strong></p>
+<p>Bayangkan skenario ini: suatu hari server kamu diretas, dan penyerang berhasil mengakses database. Semua password langsung terbaca tanpa perlu usaha apapun.</p>
+<p>Yang lebih parah lagi, penelitian menunjukkan bahwa lebih dari 50% pengguna menggunakan password yang sama di berbagai layanan — email, rekening bank, media sosial. Satu kebocoran bisa jadi petaka berantai bagi penggunamu.</p>
+<blockquote class="callout callout-note">
+<p><em>"Tapi kalau serverku sudah diproteksi dengan baik, tidak akan ada yang bisa masuk!"</em></p>
+<p>Tidak ada sistem yang 100% aman. Pendekatan terbaik adalah <strong>defense in depth</strong> — bahkan kalau satu lapisan pertahanan jebol, lapisan lainnya masih melindungi. Menyimpan password yang sudah di-<em>hash</em> adalah salah satu lapisan penting itu.</p>
+</blockquote>
+<hr/>
+<h2>3.2 Apa itu Hashing?</h2>
+<p><strong>Hashing</strong> adalah proses mengubah data (misalnya password) menjadi "sidik jari" digital yang panjangnya tetap — dan <strong>tidak bisa dikembalikan ke bentuk aslinya</strong>.</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>"parent456"  →  [fungsi hash]  →  "$2a$10$V4nCDj9z1mpYmhilx43xy..."
+</code></pre></div>
+<p>Ciri-ciri hashing:</p>
+<ul>
+<li><strong>One-way (satu arah)</strong> — Dari hash, tidak bisa mendapatkan teks aslinya. Ini yang membedakannya dari <em>enkripsi</em> yang bisa di-<em>decrypt</em>.</li>
+<li><strong>Avalanche Effect</strong> — Perubahan kecil pada input menghasilkan output yang sama sekali berbeda:
+  <code>"parent456"  →  "$2a$10$V4nCDj9..."
+  "parent457"  →  "$2a$10$Xq8pLmK..."  ← Sama sekali berbeda!</code></li>
+</ul>
+<p><strong>Kalau tidak bisa di-reverse, bagaimana cara verifikasi password?</strong></p>
+<p>Server tidak perlu mendekripsi hash. Yang dilakukan adalah: <strong>hash ulang</strong> password yang diinput user, lalu bandingkan hasilnya dengan hash di database. Kalau cocok → password benar.</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>User input: "parent456"
+                ↓ [hash ulang]
+            "$2a$10$V4nCDj9..."
+                ↓ [bandingkan]
+            "$2a$10$V4nCDj9..." ← dari database
+                ↓
+              COCOK ✅ → Login berhasil
+</code></pre></div>
+<hr/>
+<h2>3.3 Kenapa Harus bcrypt?</h2>
+<p>Kamu mungkin pernah dengar tentang algoritma hash lain seperti MD5 atau SHA256. Kenapa tidak pakai itu saja?</p>
+<p>Jawabannya adalah: MD5 dan SHA256 dirancang untuk <strong>kecepatan</strong>. Mereka bisa memproses miliaran hash per detik menggunakan GPU modern. Penyerang bisa mencoba semua kombinasi password umum dalam hitungan detik — ini disebut <em>brute force</em> atau <em>dictionary attack</em>.</p>
+<p><strong>bcrypt dirancang untuk lambat</strong> — dan itu justru kelebihannya untuk hashing password.</p>
+<p>bcrypt punya <strong>cost factor</strong> yang menentukan seberapa banyak iterasi hashing dilakukan:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>Cost 10  →  ~100ms per hash  →  sangat lambat bagi penyerang
+Cost 12  →  ~400ms per hash  →  lebih lambat lagi
+</code></pre></div>
+<p>Bagi pengguna yang login, keterlambatan 100ms tidak terasa. Tapi bagi penyerang yang ingin mencoba jutaan kombinasi? Ini hambatan yang sangat besar.</p>
+<p><strong>Struktur Hash bcrypt:</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>$2a$10$V4nCDj9z1mpYmhilx43xy.Wl9whaKMmSMSpL4qXmrS.Z73JSq7vRe
+ ↑   ↑  ↑─────────────────────────────────────────────────────↑
+ │   │                    Salt + Hash (53 karakter)
+ │   └── Cost Factor (10)
+ └─────── Versi algoritma bcrypt
+</code></pre></div>
+<p>Yang menarik: hash bcrypt sudah berisi semua informasi untuk verifikasi — versi, cost factor, dan salt. Kita tidak perlu menyimpan salt secara terpisah.</p>
+<hr/>
+<h2>3.4 Implementasi Login dengan bcrypt</h2>
+<p>Sekarang kita buat endpoint login yang menggunakan bcrypt untuk memverifikasi password.</p>
+<p>Buat file baru: <code>routes/auth.js</code></p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>routes/auth.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">bcrypt</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"bcryptjs"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">findByUsername</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// POST /api/auth/login</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/login"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">username</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// 1. Validasi input: kedua field wajib diisi</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">username</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">password</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Username and password are required"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 2. Cari user berdasarkan username</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findByUsername</span><span class="p">(</span><span class="nx">username</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Jangan tulis "Username tidak ditemukan" — itu membocorkan informasi!</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Invalid credentials"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 3. Verifikasi password menggunakan bcrypt</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">isPasswordValid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">bcrypt</span><span class="p">.</span><span class="nx">compare</span><span class="p">(</span><span class="nx">password</span><span class="p">,</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">passwordHash</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">isPasswordValid</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Invalid credentials"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 4. Login berhasil — untuk saat ini, kembalikan info user</span>
+<span class="w">  </span><span class="c1">//    (token JWT akan kita tambahkan di Bab 4)</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Login successful"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">user</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">username</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>Kenapa <code>async/await</code>?</strong></p>
+<p><code>bcrypt.compare()</code> adalah operasi yang memakan waktu CPU (karena sengaja lambat). Dengan <code>async/await</code>, server tidak "membekukan" saat memproses satu request — server tetap bisa melayani request lain dari user yang berbeda.</p>
+<p><strong>Kenapa error message-nya <code>"Invalid credentials"</code> bukan lebih spesifik?</strong></p>
+<p>Pesan yang terlalu spesifik seperti <code>"Username tidak ditemukan"</code> membantu penyerang mengetahui apakah sebuah username valid atau tidak — ini disebut <em>user enumeration attack</em>. Kita samarkan keduanya dengan pesan yang sama agar penyerang tidak mendapat informasi berharga.</p>
+<hr/>
+<p>Daftarkan route auth di <code>index.js</code>:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>index.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">helmet</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"helmet"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">watchlistRoutes</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./routes/watchlist.js"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">authRoutes</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./routes/auth.js"</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">PORT</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PORT</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">();</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">helmet</span><span class="p">());</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="s2">"Family Movie Watchlist API"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">"/api/watchlist"</span><span class="p">,</span><span class="w"> </span><span class="nx">watchlistRoutes</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s2">"/api/auth"</span><span class="p">,</span><span class="w"> </span><span class="nx">authRoutes</span><span class="p">);</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Server running on port </span><span class="si">${</span><span class="nx">PORT</span><span class="si">}</span><span class="sb">...`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+<p><strong>Uji coba login:</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Login berhasil
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+Body: { "username": "dad_miller", "password": "parent456" }
+
+# Login gagal - password salah
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+Body: { "username": "dad_miller", "password": "salah123" }
+
+# Login gagal - username tidak ada
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+Body: { "username": "tidak_ada", "password": "apapun" }
+</code></pre></div>
+<p>Kita sudah bisa login! Tapi ada pertanyaan besar yang belum terjawab:</p>
+<blockquote class="callout callout-note">
+<p><strong>Setelah login berhasil, bagaimana server "mengingat" bahwa user sudah login di request berikutnya?</strong></p>
+<p>HTTP itu <em>stateless</em> — setiap request dianggap baru. Server tidak punya memori tentang request sebelumnya. Inilah yang akan kita pecahkan di bab berikutnya...</p>
+</blockquote>
+<hr/></div></article>
+<div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+<article class="page chapter-page" id="bab-4"><header class="chapter-head"><div class="chapter-num">Bab 4</div><h1 class="chapter-title">Autentikasi: Kenalan dengan JWT</h1></header><div class="chapter-body"><h2>4.1 Masalah HTTP yang Stateless</h2>
+<p>HTTP adalah protokol yang <strong>stateless</strong> — setiap request yang masuk ke server dianggap sebagai request baru yang independen. Server tidak menyimpan "ingatan" tentang siapa yang sudah login.</p>
+<p><strong>Analogi:</strong></p>
+<blockquote class="callout callout-note">
+<p>Bayangkan kamu masuk ke sebuah gedung yang dijaga satpam. Satpam itu punya penyakit aneh — dia kehilangan memori setiap beberapa detik. Setiap kali kamu melewati pintu, dia tidak mengenalimu dan meminta kamu menunjukkan identitas lagi dari awal.</p>
+<p>Itulah HTTP. Server adalah satpam yang pelupa.</p>
+</blockquote>
+<p><strong>Solusi lama: Session</strong></p>
+<p>Server menyimpan data "siapa yang sudah login" di memory, lalu memberikan "tiket" (session ID) kepada client. Client menyertakan tiket ini di setiap request. Server mengecek tiket ke penyimpanannya.</p>
+<p>Masalahnya: kalau kamu punya banyak server (untuk melayani jutaan pengguna), semua server perlu berbagi data session yang sama. Ini rumit dan tidak scalable.</p>
+<p><strong>Solusi modern: Token (JWT)</strong></p>
+<p>Server memberikan "kartu identitas digital" kepada client setelah login. Client menyertakan kartu ini di setiap request. Server hanya perlu <strong>memverifikasi kartu</strong> — tidak perlu menyimpan apapun di sisi server.</p>
+<hr/>
+<h2>4.2 Apa itu JWT?</h2>
+<p><strong>JWT</strong> (<em>JSON Web Token</em>) adalah standar terbuka untuk membuat token yang berisi informasi dan bisa diverifikasi keasliannya.</p>
+<p>Sebuah JWT terdiri dari tiga bagian yang dipisahkan oleh tanda titik (<code>.</code>):</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwicm9sZSI6InBhcmVudCJ9.abc123xyz
+       ↑                          ↑                          ↑
+    HEADER                     PAYLOAD                   SIGNATURE
+</code></pre></div>
+<p><strong>Header</strong> — Jenis token dan algoritma:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="p">{</span><span class="w"> </span><span class="nt">"alg"</span><span class="p">:</span><span class="w"> </span><span class="s2">"HS256"</span><span class="p">,</span><span class="w"> </span><span class="nt">"typ"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JWT"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p><strong>Payload</strong> — Data yang ingin kita simpan di dalam token:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dad_miller"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"parent"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"iat"</span><span class="p">:</span><span class="w"> </span><span class="mi">1700000000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"exp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1700086400</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>iat</code> = <em>issued at</em> — kapan token dibuat
+<code>exp</code> = <em>expiration</em> — kapan token kadaluarsa</p>
+<p><strong>Signature</strong> — Tanda tangan digital:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>HMACSHA256(
+  base64(header) + "." + base64(payload),
+  SECRET_KEY
+)
+</code></pre></div>
+<blockquote class="callout callout-warning">
+<p><strong>⚠️ Penting untuk Dipahami!</strong></p>
+<p>Bagian Header dan Payload JWT hanya di-encode dengan Base64 — artinya, siapapun bisa <strong>membacanya</strong>. JWT bukan enkripsi!</p>
+<p>Tapi tidak ada yang bisa <strong>mengubah</strong> isinya tanpa merusak Signature — karena Signature dibuat menggunakan secret key yang hanya server yang tahu.</p>
+<p>Kesimpulan: <strong>Jangan simpan password atau data sangat sensitif di dalam JWT payload.</strong></p>
+</blockquote>
+<hr/>
+<h2>4.3 Cara Kerja JWT dalam Autentikasi</h2>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">json</span></div><pre><span></span><code>Client                                    Server
+  │                                         │
+  │  POST /api/auth/login                   │
+  │  { username, password }                 │
+  │ ───────────────────────────────────►   │
+  │                                         │  1. Verifikasi credentials
+  │                                         │  2. Buat JWT berisi { id, role }
+  │  { token: "eyJ..." }                   │
+  │ ◄───────────────────────────────────   │
+  │                                         │
+  │  [simpan token di client]               │
+  │                                         │
+  │  GET /api/watchlist/1                   │
+  │  Authorization: Bearer eyJ...           │
+  │ ───────────────────────────────────►   │
+  │                                         │  3. Verifikasi JWT (tanpa DB!)
+  │                                         │  4. Tahu siapa user-nya dari token
+  │  [data watchlist]                       │
+  │ ◄───────────────────────────────────   │
+</code></pre></div>
+<p>Setelah mendapatkan token, client menyertakannya di header setiap request dengan format:</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
+</code></pre></div>
+<hr/>
+<h2>4.4 Implementasi JWT di Login</h2>
+<p>Pertama, tambahkan <code>JWT_SECRET</code> ke file <code>.env</code>:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>.env</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>PORT=3000
+JWT_SECRET=ini-adalah-secret-key-yang-panjang-dan-sangat-rahasia-minimal-32-karakter
+</code></pre></div>
+<blockquote class="callout callout-note">
+<p><strong>Kenapa JWT_SECRET harus panjang dan acak?</strong></p>
+<p>Secret key digunakan untuk membuat dan memverifikasi signature. Kalau mudah ditebak (seperti <code>"secret"</code> atau <code>"abc123"</code>), penyerang bisa membuat token palsu. Gunakan minimal 32 karakter acak di production.</p>
+</blockquote>
+<p>Update <code>routes/auth.js</code> — tambahkan pembuatan JWT:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>routes/auth.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">bcrypt</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"bcryptjs"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="nx">jwt</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"jsonwebtoken"</span><span class="p">;</span><span class="w">      </span><span class="c1">// ← Tambahkan</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">findByUsername</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/login"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">username</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">username</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">password</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Username and password are required"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">findByUsername</span><span class="p">(</span><span class="nx">username</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Invalid credentials"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">isPasswordValid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">bcrypt</span><span class="p">.</span><span class="nx">compare</span><span class="p">(</span><span class="nx">password</span><span class="p">,</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">passwordHash</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">isPasswordValid</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Invalid credentials"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// ── Buat JWT Token ────────────────────────────────────────</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jwt</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span><span class="w">           </span><span class="c1">// ← ID user (number)</span>
+<span class="w">      </span><span class="nx">username</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">,</span><span class="w">       </span><span class="c1">// ← "parent" atau "child"</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nx">JWT_SECRET</span><span class="p">,</span><span class="w">              </span><span class="c1">// ← Secret key untuk tanda tangan</span>
+<span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">expiresIn</span><span class="o">:</span><span class="w"> </span><span class="s2">"1h"</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1">// ← Token kadaluarsa dalam 1 jam</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// ─────────────────────────────────────────────────────────</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Login successful"</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">token</span><span class="p">,</span><span class="w">   </span><span class="c1">// ← Kirim token ke client</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
+</code></pre></div>
+<blockquote class="callout callout-note">
+<p><strong>Mengapa response hanya mengembalikan <code>token</code>?</strong></p>
+<p>FreeCodeCamp mensyaratkan response memiliki field <code>token</code>. Kalau ingin tambahkan info user juga, boleh — tapi field <code>token</code> wajib ada.</p>
+</blockquote>
+<hr/>
+<h2>4.5 Membuat Middleware <code>authenticate</code></h2>
+<p>Sekarang kita buat middleware yang bertugas memeriksa token JWT di setiap request.</p>
+<p><strong>Apa itu Middleware?</strong></p>
+<p>Middleware adalah fungsi yang berjalan di "tengah-tengah" antara request masuk dan route handler. Seperti pos pemeriksaan — setiap request harus melewati pos ini sebelum bisa lanjut.</p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>Request → [authenticate] → [Route Handler] → Response
+                ↓ (kalau token tidak valid)
+           401 Unauthorized
+</code></pre></div>
+<p>Fungsi middleware punya tiga parameter: <code>req</code>, <code>res</code>, dan <code>next</code>. Fungsi <code>next()</code> digunakan untuk meneruskan ke middleware atau route handler berikutnya.</p>
+<p>Buat file baru: <code>middleware/authenticate.js</code></p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>middleware/authenticate.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">jwt</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"jsonwebtoken"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// 1. Ambil header Authorization</span>
+<span class="w">  </span><span class="c1">//    Format yang diharapkan: "Bearer eyJhbGciOiJIUzI1NiJ9..."</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">authHeader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">"authorization"</span><span class="p">];</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">authHeader</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">authHeader</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="mf">1</span><span class="p">];</span>
+
+<span class="w">  </span><span class="c1">// 2. Kalau tidak ada token, tolak dengan 401</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">token</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"No token provided."</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// 3. Verifikasi token</span>
+<span class="w">  </span><span class="k">try</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">const</span><span class="w"> </span><span class="nx">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">jwt</span><span class="p">.</span><span class="nx">verify</span><span class="p">(</span><span class="nx">token</span><span class="p">,</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="p">);</span>
+<span class="w">    </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">decoded</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Simpan info user ke dalam request</span>
+<span class="w">    </span><span class="nx">next</span><span class="p">();</span><span class="w">              </span><span class="c1">// ← Lanjutkan ke handler berikutnya</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Token tidak valid atau sudah kadaluarsa</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">401</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Invalid or expired token."</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Perhatikan dua hal penting:</strong></p>
+<ol>
+<li>
+<p><strong>Pesan error harus tepat</strong> — termasuk tanda titik (<code>.</code>) di akhir:
+   - Tidak ada token → <code>"No token provided."</code> (status <code>401</code>)
+   - Token tidak valid → <code>"Invalid or expired token."</code> (status <code>401</code>)</p>
+</li>
+<li>
+<p><strong>Keduanya menggunakan status <code>401</code></strong> — Baik "tidak ada token" maupun "token tidak valid" sama-sama berarti request tidak terautentikasi. Kita tidak perlu membedakan keduanya dengan status code yang berbeda dari sudut pandang client.</p>
+</li>
+</ol>
+<p><strong>Mengapa kita simpan decoded token ke <code>req.user</code>?</strong></p>
+<p><code>req</code> adalah objek yang merepresentasikan HTTP request. Kita bisa menambahkan properti kustom ke objek ini untuk diteruskan ke handler berikutnya. Dengan menyimpan <code>decoded</code> ke <code>req.user</code>, route handler selanjutnya bisa tahu siapa yang melakukan request tanpa perlu decode token lagi.</p>
+<hr/>
+<p>Pasang middleware <code>authenticate</code> ke routes watchlist di <code>routes/watchlist.js</code>:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>routes/watchlist.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">authenticate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../middleware/authenticate.js"</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">getWatchlist</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">addMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">updateMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">deleteMovie</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
+
+<span class="c1">// authenticate berlaku untuk SEMUA route di router ini</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"/:userId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">watchlist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getWatchlist</span><span class="p">(</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">watchlist</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">watchlist</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/:userId/movies"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">genre</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"title and genre are required"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">addMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">movie</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">201</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">movie</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">updateMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">updated</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">updated</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">router</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">deleteMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie deleted successfully"</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>Uji coba autentikasi:</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># 1. Login dulu untuk dapatkan token
+POST http://localhost:3000/api/auth/login
+Body: { "username": "dad_miller", "password": "parent456" }
+→ Catat token dari response
+
+# 2. Akses watchlist TANPA token (harus dapat 401)
+GET http://localhost:3000/api/watchlist/1
+→ Expected: 401 { "error": "No token provided." }
+
+# 3. Akses dengan token rusak (harus dapat 401)
+GET http://localhost:3000/api/watchlist/1
+Authorization: Bearer token-yang-salah
+→ Expected: 401 { "error": "Invalid or expired token." }
+
+# 4. Akses dengan token valid (harus berhasil)
+GET http://localhost:3000/api/watchlist/1
+Authorization: Bearer &lt;token-dari-langkah-1&gt;
+→ Expected: 200 OK ✅
+</code></pre></div>
+<blockquote class="callout callout-note">
+<p><strong>Pertanyaan untuk Dipikirkan:</strong></p>
+<p>Login sebagai Jake (<code>jake_miller</code>, role: <code>child</code>), lalu coba akses dan hapus film dari watchlist Sophie (ID: 4). Masih bisa kan?</p>
+<p>Jake sudah <em>terautentikasi</em> — server tahu siapa dia. Tapi server belum mengecek apakah Jake <em>berhak</em> melakukan aksi itu. Inilah yang akan kita tambahkan di bab terakhir.</p>
+</blockquote>
+<hr/></div></article>
+<div class="page-divider" aria-hidden="true"><span></span><i></i><span></span></div>
+<article class="page chapter-page" id="bab-5"><header class="chapter-head"><div class="chapter-num">Bab 5</div><h1 class="chapter-title">Otorisasi: Siapa Boleh Melakukan Apa?</h1></header><div class="chapter-body"><h2>5.1 Autentikasi vs Otorisasi</h2>
+<p>Dua konsep ini sering tertukar. Tapi bedanya sangat fundamental:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th></th>
+<th>Autentikasi</th>
+<th>Otorisasi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pertanyaan</strong></td>
+<td><em>"Siapa kamu?"</em></td>
+<td><em>"Apa yang boleh kamu lakukan?"</em></td>
+</tr>
+<tr>
+<td><strong>Tujuan</strong></td>
+<td>Membuktikan identitas</td>
+<td>Memberikan/menolak hak akses</td>
+</tr>
+<tr>
+<td><strong>Tools</strong></td>
+<td>bcrypt + JWT</td>
+<td>Role check, permission check</td>
+</tr>
+<tr>
+<td><strong>Status error</strong></td>
+<td>401 Unauthorized</td>
+<td>403 Forbidden</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Analogi Hotel:</strong></p>
+<blockquote class="callout callout-note">
+<ul>
+<li><strong>Autentikasi</strong>: Resepsionis memverifikasi identitasmu saat check-in, lalu memberikan kunci kamar.</li>
+<li><strong>Otorisasi</strong>: Kunci kamar 101 hanya bisa membuka kamar 101. Tidak bisa membuka kamar 202, tidak bisa masuk ke ruang server hotel.</li>
+</ul>
+</blockquote>
+<p>Jadi autentikasi menjawab <strong>siapa</strong>, otorisasi menjawab <strong>boleh tidak</strong>.</p>
+<p><strong>Penting:</strong></p>
+<blockquote class="callout callout-note">
+<p>Autentikasi tanpa otorisasi berarti semua pengguna yang sudah login bisa melakukan <em>apapun</em>. Seperti hotel yang memberikan kunci master kepada semua tamu — tidak masuk akal!</p>
+</blockquote>
+<hr/>
+<h2>5.2 Role-Based Access Control (RBAC)</h2>
+<p><strong>RBAC</strong> (<em>Role-Based Access Control</em>) adalah pendekatan otorisasi yang paling umum. Setiap pengguna memiliki <strong>role</strong> (peran), dan setiap role memiliki hak akses yang berbeda.</p>
+<p>Di project kita, ada dua role:
+- <strong><code>parent</code></strong> — Bisa melakukan modifikasi (tambah/ubah/hapus) ke watchlist siapapun
+- <strong><code>child</code></strong> — Hanya bisa memodifikasi watchlist milik sendiri</p>
+<p><strong>Aturan untuk endpoint modifikasi (POST, PUT, DELETE):</strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Siapa</th>
+<th>Akses ke watchlist sendiri</th>
+<th>Akses ke watchlist orang lain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>parent</code></td>
+<td>✅ Boleh</td>
+<td>✅ Boleh</td>
+</tr>
+<tr>
+<td><code>child</code></td>
+<td>✅ Boleh</td>
+<td>❌ Ditolak (403)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bagaimana dengan endpoint GET?</strong></p>
+<p>Untuk endpoint GET (melihat watchlist), aturannya berbeda — <strong>semua user yang sudah login bisa melihat watchlist siapapun</strong>, terlepas dari role-nya. Kita tidak memasang otorisasi di GET.</p>
+<blockquote class="callout callout-note">
+<p>Ini adalah keputusan desain yang disengaja. Dalam konteks keluarga, wajar kalau semua anggota bisa <em>melihat</em> film apa yang ditonton orang lain — tapi hanya parent yang bisa <em>memodifikasi</em> watchlist orang lain.</p>
+</blockquote>
+<hr/>
+<h2>5.3 Membuat Middleware <code>authorizeModification</code></h2>
+<p>Buat file baru: <code>middleware/authorize.js</code></p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>middleware/authorize.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">javascript</span></div><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">;</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">loggedInUserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span><span class="w">           </span><span class="c1">// ← number (dari JWT payload)</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">requestedUserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span><span class="w"> </span><span class="c1">// ← konversi dari string ke number</span>
+
+<span class="w">  </span><span class="c1">// Parent boleh memodifikasi watchlist siapapun → langsung lanjut</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">role</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"parent"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Child hanya boleh memodifikasi watchlist milik sendiri</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">role</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"child"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">loggedInUserId</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">requestedUserId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="c1">// Selain itu → tolak</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Access denied"</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Kenapa kita perlu <code>Number(req.params.userId)</code>?</strong></p>
+<p><code>req.params.userId</code> adalah string (misalnya <code>"3"</code>), sedangkan <code>req.user.id</code> yang kita simpan di JWT adalah angka (misalnya <code>3</code>). Perbandingan <code>"3" === 3</code> menghasilkan <code>false</code>! Kita harus mengkonversi salah satunya agar perbandingan berjalan benar.</p>
+<p><strong>Kenapa pesan error-nya hanya <code>"Access denied"</code>?</strong></p>
+<p>Sederhana dan tidak membocorkan informasi. Penyerang tidak perlu tahu <em>mengapa</em> mereka ditolak — apakah karena role salah, atau karena ID tidak cocok.</p>
+<hr/>
+<h2>5.4 Memasang Middleware ke Routes</h2>
+<p>Sekarang kita pasang <code>authorizeModification</code> hanya ke route yang melakukan modifikasi — POST, PUT, dan DELETE. GET tidak perlu.</p>
+<p>Update <code>routes/watchlist.js</code> menjadi versi final:</p>
+<div class="file-badge"><span class="file-badge-icon">File:</span><code>routes/watchlist.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"express"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">authenticate</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../middleware/authenticate.js"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../middleware/authorize.js"</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">getWatchlist</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">addMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">updateMovie</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">deleteMovie</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
+
+<span class="c1">// authenticate → berlaku untuk SEMUA route</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">authenticate</span><span class="p">);</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// GET /api/watchlist/:userId</span>
+<span class="c1">// Hanya butuh authenticate — semua user yang login bisa lihat watchlist siapapun</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">"/:userId"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">watchlist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">getWatchlist</span><span class="p">(</span><span class="nx">userId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">watchlist</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">watchlist</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// POST /api/watchlist/:userId/movies</span>
+<span class="c1">// Butuh authenticate + authorizeModification</span>
+<span class="c1">// (child hanya bisa POST ke watchlist sendiri)</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/:userId/movies"</span><span class="p">,</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">title</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="nx">genre</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"title and genre are required"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">addMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">title</span><span class="p">,</span><span class="w"> </span><span class="nx">genre</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">movie</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"User not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">201</span><span class="p">).</span><span class="nx">json</span><span class="p">(</span><span class="nx">movie</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// PUT /api/watchlist/:userId/movies/:movieId</span>
+<span class="c1">// Butuh authenticate + authorizeModification</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">updated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">updateMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">,</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">updated</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="nx">updated</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="c1">// DELETE /api/watchlist/:userId/movies/:movieId</span>
+<span class="c1">// Butuh authenticate + authorizeModification</span>
+<span class="c1">// ─────────────────────────────────────────</span>
+<span class="nx">router</span><span class="p">.</span><span class="ow">delete</span><span class="p">(</span><span class="s2">"/:userId/movies/:movieId"</span><span class="p">,</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">userId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">movieId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">movieId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">deleteMovie</span><span class="p">(</span><span class="nx">userId</span><span class="p">,</span><span class="w"> </span><span class="nx">movieId</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">result</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie deleted successfully"</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
+</code></pre></div>
+<p><strong>Alur middleware yang terjadi untuk setiap request:</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">javascript</span></div><pre><span></span><code>Semua route:
+  Request → [authenticate] → route handler
+
+POST, PUT, DELETE:
+  Request → [authenticate] → [authorizeModification] → route handler
+</code></pre></div>
+<p>Dengan menempatkan <code>authorizeModification</code> sebagai argumen kedua (setelah path, sebelum handler), kita memastikan otorisasi dijalankan tepat sebelum logic bisnis — tapi hanya untuk route yang memerlukannya.</p>
+<hr/>
+<h2>5.5 Uji Coba Keseluruhan</h2>
+<p>Inilah skenario test lengkap untuk memastikan semua aturan berjalan dengan benar.</p>
+<p><strong>Persiapan — Login dan dapatkan token:</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Login sebagai Jake (child, ID: 3)
+POST http://localhost:3000/api/auth/login
+Body: { "username": "jake_miller", "password": "child123" }
+→ Simpan token Jake
+
+# Login sebagai Dad (parent, ID: 1)
+POST http://localhost:3000/api/auth/login
+Body: { "username": "dad_miller", "password": "parent456" }
+→ Simpan token Dad
+</code></pre></div>
+<hr/>
+<p><strong>Skenario 1 — Tanpa token (401)</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>GET http://localhost:3000/api/watchlist/1
+→ Expected: 401 { "error": "No token provided." }
+
+POST http://localhost:3000/api/watchlist/1/movies
+→ Expected: 401 { "error": "No token provided." }
+</code></pre></div>
+<hr/>
+<p><strong>Skenario 2 — Child melihat watchlist (GET bebas)</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Jake (child) melihat watchlist Sophie
+GET http://localhost:3000/api/watchlist/4
+Authorization: Bearer &lt;token-jake&gt;
+→ Expected: 200 OK ✅ (GET tidak ada otorisasi role)
+
+# Jake (child) melihat watchlist Dad
+GET http://localhost:3000/api/watchlist/1
+Authorization: Bearer &lt;token-jake&gt;
+→ Expected: 200 OK ✅
+</code></pre></div>
+<hr/>
+<p><strong>Skenario 3 — Child memodifikasi watchlist milik sendiri (boleh)</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Jake (ID: 3) tambah film ke watchlistnya sendiri
+POST http://localhost:3000/api/watchlist/3/movies
+Authorization: Bearer &lt;token-jake&gt;
+Content-Type: application/json
+Body: { "title": "Spider-Man", "genre": "Action" }
+→ Expected: 201 Created ✅
+
+# Jake update film di watchlistnya sendiri
+PUT http://localhost:3000/api/watchlist/3/movies/1
+Authorization: Bearer &lt;token-jake&gt;
+Content-Type: application/json
+Body: { "watched": true }
+→ Expected: 200 OK ✅
+
+# Jake hapus film dari watchlistnya sendiri
+DELETE http://localhost:3000/api/watchlist/3/movies/1
+Authorization: Bearer &lt;token-jake&gt;
+→ Expected: 200 OK ✅
+</code></pre></div>
+<hr/>
+<p><strong>Skenario 4 — Child memodifikasi watchlist orang lain (ditolak)</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Jake (child) mencoba tambah film ke watchlist Sophie
+POST http://localhost:3000/api/watchlist/4/movies
+Authorization: Bearer &lt;token-jake&gt;
+Body: { "title": "Frozen 2", "genre": "Animation" }
+→ Expected: 403 { "error": "Access denied" } ❌
+
+# Jake mencoba hapus film dari watchlist Dad
+DELETE http://localhost:3000/api/watchlist/1/movies/1
+Authorization: Bearer &lt;token-jake&gt;
+→ Expected: 403 { "error": "Access denied" } ❌
+</code></pre></div>
+<hr/>
+<p><strong>Skenario 5 — Parent memodifikasi watchlist siapapun (boleh)</strong></p>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code># Dad (parent) tambah film ke watchlist Jake
+POST http://localhost:3000/api/watchlist/3/movies
+Authorization: Bearer &lt;token-dad&gt;
+Content-Type: application/json
+Body: { "title": "The Lion King", "genre": "Animation" }
+→ Expected: 201 Created ✅
+
+# Dad hapus film dari watchlist Sophie
+DELETE http://localhost:3000/api/watchlist/4/movies/1
+Authorization: Bearer &lt;token-dad&gt;
+→ Expected: 200 OK ✅
+</code></pre></div>
+<p>Semua skenario berjalan sesuai harapan? Kalau iya — <strong>selamat! Challenge FreeCodeCamp berhasil diselesaikan!</strong> 🎉</p>
+<hr/>
+<h2>Penutup: Struktur Akhir Project</h2>
+<div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code>build-a-family-movie-watchlist-api/
+│
+├── index.js                     ← Server + mount routes
+│
+├── routes/
+│   ├── auth.js                  ← POST /api/auth/login
+│   └── watchlist.js             ← CRUD dengan middleware
+│
+├── middleware/
+│   ├── authenticate.js          ← export function authenticate
+│   └── authorize.js             ← export function authorizeModification
+│
+├── utils/
+│   └── db.js                    ← Sudah disediakan, tidak diubah
+│
+├── data/
+│   ├── users.json               ← passwordHash (bukan plaintext)
+│   └── watchlists.json
+│
+└── .env                         ← PORT, JWT_SECRET
+</code></pre></div>
+<hr/>
+<h2>Ringkasan: Mengapa Setiap Bagian Ada</h2>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Komponen</th>
+<th>Mengapa Perlu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>express</code></td>
+<td>Membangun HTTP server dengan mudah</td>
+</tr>
+<tr>
+<td><code>helmet</code></td>
+<td>Proteksi HTTP headers dari serangan umum</td>
+</tr>
+<tr>
+<td><code>bcryptjs</code></td>
+<td>Password tidak boleh disimpan dalam bentuk polos</td>
+</tr>
+<tr>
+<td><code>jsonwebtoken</code></td>
+<td>HTTP stateless — perlu cara untuk "mengingat" siapa yang login</td>
+</tr>
+<tr>
+<td><code>middleware/authenticate.js</code></td>
+<td>Semua route watchlist harus diakses oleh user yang sudah login</td>
+</tr>
+<tr>
+<td><code>middleware/authorize.js</code></td>
+<td>Login saja tidak cukup — perlu cek apakah user <em>berhak</em> melakukan aksi tertentu</td>
+</tr>
+<tr>
+<td>File <code>.env</code></td>
+<td>Konfigurasi rahasia tidak boleh hardcode di kode</td>
+</tr>
+<tr>
+<td>Folder <code>utils/</code></td>
+<td>Logika data dipisah dari logika routing</td>
+</tr>
+<tr>
+<td>Folder <code>middleware/</code></td>
+<td>Logika keamanan dipisah dari logika bisnis</td>
+</tr>
+</tbody>
+</table>
+<hr/>
+<h2>Langkah Selanjutnya</h2>
+<p>Kamu sudah menyelesaikan project ini dan paham <em>mengapa</em> setiap bagiannya ada. Beberapa topik yang bisa kamu eksplorasi selanjutnya:</p>
+<ul>
+<li><strong>Database nyata</strong> — Ganti file JSON dengan PostgreSQL menggunakan Prisma ORM</li>
+<li><strong>Refresh Token</strong> — JWT kadaluarsa dalam 1 jam. Bagaimana memperbaruinya tanpa login ulang?</li>
+<li><strong>Rate Limiting</strong> — Batasi jumlah login attempt untuk mencegah brute force</li>
+<li><strong>Input Validation</strong> — Gunakan library <code>zod</code> untuk validasi input yang lebih robust</li>
+<li><strong>Unit Testing</strong> — Test setiap endpoint dengan Jest atau Vitest</li>
+</ul>
+<p>Selamat belajar! 🚀</p></div></article>
+
+
+</div>
+</body>
+</html>
