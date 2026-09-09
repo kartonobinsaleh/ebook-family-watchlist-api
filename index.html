@@ -766,7 +766,7 @@ GET /api/watchlist/3   → userId = "3" (Jake Miller)
 </code></pre></div>
 <hr/>
 <h2>2.3 Simulasi Database dengan File JSON</h2>
-<p>Di project ini, kita menggunakan file JSON sebagai "database" sementara. Di dunia nyata, kita akan pakai database seperti PostgreSQL atau MongoDB — tapi untuk belajar, ini sudah cukup.</p>
+<p>Di project ini, kita menggunakan file JSON sebagai "database" sementara. Di dunia nyata, kita akan pakai database atau PostgreSQL atau MongoDB — tapi untuk belajar, ini sudah cukup.</p>
 <p><strong>Data Pengguna</strong> (<code>data/users.json</code>):</p>
 <p>Keluarga Miller terdiri dari 4 anggota:</p>
 <div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="p">[</span>
@@ -956,7 +956,7 @@ Kalau <code>userId</code> tidak ditemukan, atau <code>movieId</code> tidak ada d
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">404</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie or user not found"</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
 
-<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie deleted successfully"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p({</span><span class="w"> </span><span class="nx">message</span><span class="o">:</span><span class="w"> </span><span class="s2">"Movie deleted successfully"</span><span class="w"> </span><span class="p">});</span>
 <span class="p">});</span>
 
 <span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
@@ -1281,7 +1281,6 @@ JWT_SECRET=ini-adalah-secret-key-yang-panjang-dan-sangat-rahasia-minimal-32-kara
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">findByUsername</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../utils/db.js"</span><span class="p">;</span>
 
 <span class="kd">const</span><span class="w"> </span><span class="nx">router</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">.</span><span class="nx">Router</span><span class="p">();</span>
-<span class="kd">const</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="p">;</span><span class="w">  </span><span class="c1">// ← Tambahkan</span>
 
 <span class="nx">router</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s2">"/login"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">username</span><span class="p">,</span><span class="w"> </span><span class="nx">password</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
@@ -1307,7 +1306,7 @@ JWT_SECRET=ini-adalah-secret-key-yang-panjang-dan-sangat-rahasia-minimal-32-kara
 <span class="w">      </span><span class="nx">username</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span>
 <span class="w">      </span><span class="nx">role</span><span class="o">:</span><span class="w"> </span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">,</span><span class="w">       </span><span class="c1">// ← "parent" atau "child"</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nx">JWT_SECRET</span><span class="p">,</span><span class="w">              </span><span class="c1">// ← Secret key untuk tanda tangan</span>
+<span class="w">    </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s2">"default_secret"</span><span class="p">,</span><span class="w">  </span><span class="c1">// ← Secret key dengan fallback</span>
 <span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="nx">expiresIn</span><span class="o">:</span><span class="w"> </span><span class="s2">"1h"</span><span class="w"> </span><span class="p">}</span><span class="w">      </span><span class="c1">// ← Token kadaluarsa dalam 1 jam</span>
 <span class="w">  </span><span class="p">);</span>
 <span class="w">  </span><span class="c1">// ─────────────────────────────────────────────────────────</span>
@@ -1321,6 +1320,7 @@ JWT_SECRET=ini-adalah-secret-key-yang-panjang-dan-sangat-rahasia-minimal-32-kara
 <span class="k">export</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="nx">router</span><span class="p">;</span>
 </code></pre></div>
 <blockquote class="callout callout-note">
+<p><strong>Catatan:</strong> Kita menambahkan <code>|| "default_secret"</code> sebagai <em>fallback</em>. Ini sangat berguna di lingkungan pengujian (seperti tes FreeCodeCamp) di mana file <code>.env</code> terkadang tidak dimuat secara otomatis.</p>
 <p><strong>Mengapa response hanya mengembalikan <code>token</code>?</strong></p>
 <p>FreeCodeCamp mensyaratkan response memiliki field <code>token</code>. Kalau ingin tambahkan info user juga, boleh — tapi field <code>token</code> wajib ada.</p>
 </blockquote>
@@ -1337,7 +1337,7 @@ JWT_SECRET=ini-adalah-secret-key-yang-panjang-dan-sangat-rahasia-minimal-32-kara
 <p>Buat file baru: <code>middleware/authenticate.js</code></p>
 <div class="file-badge"><span class="file-badge-icon">File:</span><code>middleware/authenticate.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span></div><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="nx">jwt</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"jsonwebtoken"</span><span class="p">;</span>
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="p">;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">JWT_SECRET</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s2">"default_secret"</span><span class="p">;</span>
 
 <span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">authenticate</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// 1. Ambil header Authorization</span>
@@ -1547,26 +1547,17 @@ Authorization: Bearer &lt;token-dari-langkah-1&gt;
 <h2>5.3 Membuat Middleware <code>authorizeModification</code></h2>
 <p>Buat file baru: <code>middleware/authorize.js</code></p>
 <div class="file-badge"><span class="file-badge-icon">File:</span><code>middleware/authorize.js</code></div><div class="hl code-block"><div class="code-chrome"><span class="code-dots"><i></i><i></i><i></i></span><span class="code-lang">javascript</span></div><pre><span></span><code><span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">authorizeModification</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">,</span><span class="w"> </span><span class="nx">next</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">role</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="p">;</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">loggedInUserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span><span class="w">           </span><span class="c1">// ← number (dari JWT payload)</span>
-<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">requestedUserId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Number</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="p">);</span><span class="w"> </span><span class="c1">// ← konversi dari string ke number</span>
-
-<span class="w">  </span><span class="c1">// Parent boleh memodifikasi watchlist siapapun → langsung lanjut</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">role</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"parent"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// Aturan otorisasi: tolak akses jika role bukan "parent", </span>
+<span class="w">  </span><span class="c1">// atau jika role bukan "child" dan ID dari URL tidak cocok dengan ID milik user yang login.</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"parent"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">role</span><span class="w"> </span><span class="o">!==</span><span class="w"> </span><span class="s2">"child"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">userId</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nx">req</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Access denied"</span><span class="w"> </span><span class="p">});</span>
 <span class="w">  </span><span class="p">}</span>
-
-<span class="w">  </span><span class="c1">// Child hanya boleh memodifikasi watchlist milik sendiri</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">role</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s2">"child"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nx">loggedInUserId</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="nx">requestedUserId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nx">next</span><span class="p">();</span>
-<span class="w">  </span><span class="p">}</span>
-
-<span class="w">  </span><span class="c1">// Selain itu → tolak</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mf">403</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span><span class="w"> </span><span class="nx">error</span><span class="o">:</span><span class="w"> </span><span class="s2">"Access denied"</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nx">next</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><strong>Kenapa kita perlu <code>Number(req.params.userId)</code>?</strong></p>
-<p><code>req.params.userId</code> adalah string (misalnya <code>"3"</code>), sedangkan <code>req.user.id</code> yang kita simpan di JWT adalah angka (misalnya <code>3</code>). Perbandingan <code>"3" === 3</code> menghasilkan <code>false</code>! Kita harus mengkonversi salah satunya agar perbandingan berjalan benar.</p>
+<p><strong>Kenapa kita menggunakan <code>!=</code> dan bukan <code>!==</code>?</strong></p>
+<p><code>req.params.userId</code> dari URL adalah string (misalnya <code>"3"</code>), sedangkan <code>req.user.id</code> yang kita simpan di JWT bisa berupa angka (misalnya <code>3</code>). Perbandingan strict <code>"3" === 3</code> menghasilkan <code>false</code>! Dengan menggunakan <code>!=</code>, kita membiarkan JavaScript melakukan konversi tipe secara otomatis sehingga <code>"3" != 3</code> akan bernilai <code>false</code> (artinya mereka dianggap sama).</p>
 <p><strong>Kenapa pesan error-nya hanya <code>"Access denied"</code>?</strong></p>
 <p>Sederhana dan tidak membocorkan informasi. Penyerang tidak perlu tahu <em>mengapa</em> mereka ditolak — apakah karena role salah, atau karena ID tidak cocok.</p>
 <hr/>
